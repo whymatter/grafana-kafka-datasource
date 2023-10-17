@@ -34,9 +34,12 @@ func NewKafkaClient(options Options) KafkaClient {
 
 func (client *KafkaClient) consumerInitialize() {
 	var err error
+
+	timestamp := time.Now().Unix()
+
 	client.Consumer, err = kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers":  client.BootstrapServers,
-		"group.id":           "kafka-datasource",
+		"group.id":           fmt.Sprintf("kafka-datasource-%d", timestamp),
 		"enable.auto.commit": "false",
 	})
 

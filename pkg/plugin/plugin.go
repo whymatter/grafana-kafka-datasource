@@ -179,6 +179,7 @@ func (d *KafkaDatasource) RunStream(ctx context.Context, req *backend.RunStreamR
 			for key, value := range msg.Value {
 				frame.Fields = append(frame.Fields,
 					data.NewField(key, nil, make([]float64, 1)))
+				log.DefaultLogger.Warn("FIELDS %d, %s", cnt, key)
 				frame.Fields[cnt].Set(0, value)
 				cnt++
 			}

@@ -174,14 +174,12 @@ func (d *KafkaDatasource) RunStream(ctx context.Context, req *backend.RunStreamR
 			log.DefaultLogger.Info("timestamp", frame_time)
 			frame.Fields[0].Set(0, frame_time)
 
-			log.DefaultLogger.Info("TEST")
-
 			cnt := 1
 
 			for key, value := range msg.Value {
 				frame.Fields = append(frame.Fields,
 					data.NewField(key, nil, make([]float64, 1)))
-				log.DefaultLogger.Info("FIELDS %d, %s", cnt, key)
+				log.DefaultLogger.Info(fmt.Sprintf("FIELDS %d, %s", cnt, key))
 				frame.Fields[cnt].Set(0, value)
 				cnt++
 			}

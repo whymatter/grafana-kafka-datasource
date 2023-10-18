@@ -33,7 +33,7 @@ func NewKafkaInstance(s backend.DataSourceInstanceSettings) (instancemgmt.Instan
 
 	kafka_client := kafka_client.NewKafkaClient(*settings)
 
-	return &KafkaDatasource{kafka_client}, nil
+	return &KafkaDatasource{kafka_client, nil}, nil
 }
 
 func getDatasourceSettings(s backend.DataSourceInstanceSettings) (*kafka_client.Options, error) {
@@ -48,6 +48,7 @@ func getDatasourceSettings(s backend.DataSourceInstanceSettings) (*kafka_client.
 
 type KafkaDatasource struct {
 	client kafka_client.KafkaClient
+	fields []string
 }
 
 func (d *KafkaDatasource) Dispose() {
@@ -69,6 +70,7 @@ func (d *KafkaDatasource) QueryData(ctx context.Context, req *backend.QueryDataR
 }
 
 type queryModel struct {
+	Fields          string `json:"fields"`
 	Topic           string `json:"topicName"`
 	Partition       int32  `json:"partition"`
 	WithStreaming   bool   `json:"withStreaming"`
@@ -96,6 +98,8 @@ func (d *KafkaDatasource) query(_ context.Context, pCtx backend.PluginContext, q
 	partition := qm.Partition
 	autoOffsetReset := qm.AutoOffsetReset
 	timestampMode := qm.TimestampMode
+	fields := strings.Split(qm.Fields, ",")
+	d.fields = fields
 	if qm.WithStreaming {
 		channel := live.Channel{
 			Scope:     live.ScopeDatasource,
@@ -174,14 +178,15 @@ func (d *KafkaDatasource) RunStream(ctx context.Context, req *backend.RunStreamR
 			log.DefaultLogger.Info("timestamp", frame_time)
 			frame.Fields[0].Set(0, frame_time)
 
-			cnt := 1
-
-			for key, value := range msg.Value {
+			for i, key := range d.fields {
+				value, ok := msg.Value[key]
+				if !ok {
+					log.DefaultLogger.Info(fmt.Sprintf("Key not in msg: %s", key))
+				}
 				frame.Fields = append(frame.Fields,
 					data.NewField(key, nil, make([]float64, 1)))
-				log.DefaultLogger.Info(fmt.Sprintf("FIELDS %d, %s", cnt, key))
-				frame.Fields[cnt].Set(0, value)
-				cnt++
+				log.DefaultLogger.Info(fmt.Sprintf("FIELDS %d, %s, %f", i+1, key, value))
+				frame.Fields[i+1].Set(0, value)
 			}
 
 			err := sender.SendFrame(frame, data.IncludeAll)

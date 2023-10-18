@@ -40,6 +40,12 @@ export class QueryEditor extends PureComponent<Props> {
     onRunQuery();
   };
 
+  onFieldsChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, fields: event.target.value });
+    onRunQuery();
+  };
+
   onPartitionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, partition: parseFloat(event.target.value) });
@@ -80,7 +86,7 @@ export class QueryEditor extends PureComponent<Props> {
 
   render() {
     const query = defaults(this.props.query, defaultQuery);
-    const { topicName, partition, withStreaming, autoOffsetReset, timestampMode } = query;
+    const { topicName, fields, partition, withStreaming, autoOffsetReset, timestampMode } = query;
 
     return (
       <>
@@ -91,6 +97,13 @@ export class QueryEditor extends PureComponent<Props> {
               className="gf-form-input width-14"
               value={topicName || ''}
               onChange={this.onTopicNameChange}
+              type="text"
+            />
+            <InlineFormLabel width={10}>Fields</InlineFormLabel>
+            <input
+              className="gf-form-input width-14"
+              value={fields || ''}
+              onChange={this.onFieldsChange}
               type="text"
             />
             <InlineFormLabel width={10}>Partition</InlineFormLabel>

@@ -32,6 +32,7 @@ export interface KafkaQuery extends DataQuery {
   withStreaming: boolean;
   autoOffsetReset: AutoOffsetReset;
   timestampMode: TimestampMode;
+  fields: string;
 }
 
 export const defaultQuery: Partial<KafkaQuery> = {

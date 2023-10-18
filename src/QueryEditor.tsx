@@ -100,8 +100,7 @@ export class QueryEditor extends PureComponent<Props> {
               type="text"
             />
             <InlineFormLabel width={10}>Fields</InlineFormLabel>
-            <input className="gf-form-input·width-14" value={fields || ''} onChange={this.onFieldsChange} type="text"
-            />
+            <input className="gf-form-input·width-14" value={fields || ''} onChange={this.onFieldsChange} type="text" />
             <InlineFormLabel width={10}>Partition</InlineFormLabel>
             <input
               className="gf-form-input width-14"

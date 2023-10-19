@@ -117,8 +117,6 @@ jobs:
         run: |
           mv dist ${{ steps.metadata.outputs.plugin-id }}
           zip ${{ steps.metadata.outputs.archive }} ${{ steps.metadata.outputs.plugin-id }} -r
-          md5sum ${{ steps.metadata.outputs.archive }} > ${{ steps.metadata.outputs.archive-checksum }}
-          echo "::set-output name=checksum::$(cat ./${{ steps.metadata.outputs.archive-checksum }} | cut -d' ' -f1)"
 
       # - name: Lint plugin
       #   run: |
@@ -150,16 +148,16 @@ jobs:
           asset_name: ${{ steps.metadata.outputs.archive }}
           asset_content_type: application/zip
 
-      - name: Add checksum to release
-        id: upload-checksum-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{ steps.metadata.outputs.archive-checksum }}
-          asset_name: ${{ steps.metadata.outputs.archive-checksum }}
-          asset_content_type: text/plain
+      # - name: Add checksum to release
+      #   id: upload-checksum-asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./${{ steps.metadata.outputs.archive-checksum }}
+      #     asset_name: ${{ steps.metadata.outputs.archive-checksum }}
+      #     asset_content_type: text/plain
 
       # - name: Publish to Grafana.com
       #   run: |

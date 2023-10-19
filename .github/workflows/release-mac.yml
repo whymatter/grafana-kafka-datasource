@@ -3,14 +3,18 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*" # Run workflow on version tags, e.g. v1.0.0.
+      - "v*.*.*-mac" # Run workflow on version tags, e.g. v1.0.0.
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.1.2
@@ -83,7 +87,7 @@ jobs:
       - name: Get plugin metadata
         id: metadata
         run: |
-          sudo apt-get install jq
+          sudo brew install jq
 
           export GRAFANA_PLUGIN_ID=$(cat dist/plugin.json | jq -r .id)
           export GRAFANA_PLUGIN_VERSION=$(cat dist/plugin.json | jq -r .info.version)

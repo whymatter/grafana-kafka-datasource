@@ -91,7 +91,6 @@ func (d *KafkaDatasource) query(_ context.Context, pCtx backend.PluginContext, q
 
 	frame.Fields = append(frame.Fields,
 		data.NewField("time", nil, []time.Time{query.TimeRange.From, query.TimeRange.To}),
-		data.NewField("values", nil, []int64{0, 0}),
 	)
 
 	topic := qm.Topic
@@ -100,6 +99,13 @@ func (d *KafkaDatasource) query(_ context.Context, pCtx backend.PluginContext, q
 	timestampMode := qm.TimestampMode
 	fields := strings.Split(qm.Fields, ",")
 	d.fields = fields
+
+	for _, field := range fields {
+		frame.Fields = append(frame.Fields,
+			data.NewField(field, nil, []int64{0, 0}),
+		)
+	}
+
 	if qm.WithStreaming {
 		channel := live.Channel{
 			Scope:     live.ScopeDatasource,

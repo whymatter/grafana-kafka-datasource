@@ -100,11 +100,11 @@ func (d *KafkaDatasource) query(_ context.Context, pCtx backend.PluginContext, q
 	fields := strings.Split(qm.Fields, ",")
 	d.fields = fields
 
-	// for _, field := range fields {
-	// 	frame.Fields = append(frame.Fields,
-	// 		data.NewField(field, nil, []int64{0, 0}),
-	// 	)
-	// }
+	for _, field := range fields {
+		frame.Fields = append(frame.Fields,
+			data.NewField(field, nil, []int64{0, 0}),
+		)
+	}
 
 	if qm.WithStreaming {
 		channel := live.Channel{

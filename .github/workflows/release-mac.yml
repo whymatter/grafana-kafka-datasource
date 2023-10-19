@@ -87,7 +87,7 @@ jobs:
       - name: Get plugin metadata
         id: metadata
         run: |
-          sudo brew install jq
+          brew install jq
 
           export GRAFANA_PLUGIN_ID=$(cat dist/plugin.json | jq -r .id)
           export GRAFANA_PLUGIN_VERSION=$(cat dist/plugin.json | jq -r .info.version)

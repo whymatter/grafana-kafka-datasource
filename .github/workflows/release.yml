@@ -127,7 +127,7 @@ jobs:
       #     plugincheck ${{ steps.metadata.outputs.archive }}
 
       - name: Get release
-        id: get-release
+        id: get_release
         uses: cardinalby/git-get-release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -141,7 +141,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./${{ steps.metadata.outputs.archive }}
           asset_name: ${{ steps.metadata.outputs.archive }}
           asset_content_type: application/zip

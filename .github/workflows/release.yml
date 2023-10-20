@@ -126,16 +126,14 @@ jobs:
       #     popd
       #     plugincheck ${{ steps.metadata.outputs.archive }}
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Get release
+        id: get-release
+        uses: cardinalby/git-get-release-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body_path: ${{ steps.changelog.outputs.path }}
-          draft: true
+          tag_name: ${{ steps.metadata.outputs.github-tag }}
+
 
       - name: Add plugin to release
         id: upload-plugin-asset
@@ -169,6 +167,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: ${{ steps.changelog.outputs.path }}
+          draft: true
+
       - uses: actions/checkout@v2
 
       - name: Setup Node.js environment
@@ -282,17 +291,6 @@ jobs:
       #     go install
       #     popd
       #     plugincheck ${{ steps.metadata.outputs.archive }}
-
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body_path: ${{ steps.changelog.outputs.path }}
-          draft: true
 
       - name: Add plugin to release
         id: upload-plugin-asset
